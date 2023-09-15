@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="Gradle: com.github.alxrm:animated-clock-icon:1.0.2@aar">
+    <CLASSES>
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-3/8cb53f6206932743913c2c29a244fb08/transformed/jetified-animated-clock-icon-1.0.2/AndroidManifest.xml" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-3/8cb53f6206932743913c2c29a244fb08/transformed/jetified-animated-clock-icon-1.0.2/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-3/8cb53f6206932743913c2c29a244fb08/transformed/jetified-animated-clock-icon-1.0.2/res" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
