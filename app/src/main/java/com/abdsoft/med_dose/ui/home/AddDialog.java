@@ -89,11 +89,6 @@ public class AddDialog extends DialogFragment implements Toolbar.OnMenuItemClick
         this.homeFragment = homeFragment;
     }
 
-    /* public static AddDialog display(FragmentManager fragmentManager) {
-        AddDialog exampleDialog = new AddDialog();
-        exampleDialog.show(fragmentManager, TAG);
-        return exampleDialog;
-    }*/
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -170,20 +165,6 @@ public class AddDialog extends DialogFragment implements Toolbar.OnMenuItemClick
         int hour = mCurrentTime.get(Calendar.HOUR);
         int minute = mCurrentTime.get(Calendar.MINUTE);
         format = new SimpleDateFormat("h:mm a");
-//        textViewTime.setText(format.format(mCurrentTime.getTime()));
-
-/*
-        textViewTime.setOnClickListener(view1 -> {
-            TimePickerDialog mTimePicker;
-            mTimePicker = new TimePickerDialog(getActivity(), (timePicker, selectedHour, selectedMinute) -> {
-                calendar.set(Calendar.HOUR, selectedHour);
-                calendar.set(Calendar.MINUTE, selectedMinute);
-                SimpleDateFormat format12 = new SimpleDateFormat("h:mm a");
-                textViewTime.setText(format12.format(calendar.getTime()));
-            }, hour, minute, false);//Yes 24 hour time
-            mTimePicker.show();
-        });
-*/
 
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
@@ -209,7 +190,7 @@ public class AddDialog extends DialogFragment implements Toolbar.OnMenuItemClick
                 for (int iTmp = 0; iTmp < chipArrayIds.length; iTmp++) {
                     if (chipGroup.getCheckedChipId() == chipArrayIds[iTmp]) {
                         mPerDay = iTmp + 1;
-//                        Toast.makeText(getContext(), String.valueOf(mPerDay), Toast.LENGTH_LONG).show();
+
                         HomeActivity.timeItems.clear();
                         if (mPerDay > 0) {
                             numberPicker.setMinValue(mPerDay);
@@ -248,7 +229,7 @@ public class AddDialog extends DialogFragment implements Toolbar.OnMenuItemClick
         });
 
 
-        // TODO Capture and then convert this image into text (Akash)
+        // TODO Capture and then convert this image into text
 
         if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.CAMERA)
                 != PackageManager.PERMISSION_GRANTED ||

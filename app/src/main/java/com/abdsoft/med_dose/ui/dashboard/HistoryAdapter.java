@@ -1,6 +1,7 @@
 package com.abdsoft.med_dose.ui.dashboard;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,6 +13,8 @@ import com.abdsoft.med_dose.R;
 import com.google.android.material.textview.MaterialTextView;
 
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHolder> {
 
@@ -42,7 +45,18 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHold
         holder.textViewDate.append(historyItem.getDate());
         holder.textViewTimesPerDay.append(String.valueOf(historyItem.getTimesPerDay()));
         holder.textViewDosage.append(String.valueOf(historyItem.getTotalDosage()));
-        holder.textViewTimings.append(historyItem.getTimings());
+
+
+        String time = historyItem.getTimings();
+        int startIndex = time.indexOf("[");
+        int endIndex = time.lastIndexOf("]");
+
+        if (startIndex != -1 && endIndex != -1 && startIndex < endIndex) {
+            time = time.substring(startIndex + 1, endIndex);
+        }
+
+        holder.textViewTimings.append(time);
+        Log.d("TimeTable", time );
     }
 
     @Override
