@@ -1,12 +1,18 @@
 package com.abdsoft.med_dose.ui.home;
 
+import android.Manifest;
+import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.PendingIntent;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -16,8 +22,12 @@ import android.widget.EditText;
 import android.widget.NumberPicker;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.DialogFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -28,20 +38,34 @@ import com.abdsoft.med_dose.R;
 import com.abdsoft.med_dose.db.DatabaseHelper;
 import com.abdsoft.med_dose.ui.home.time.TimeAdapter;
 import com.abdsoft.med_dose.ui.home.time.TimeSelectorItem;
+import com.github.dhaval2404.imagepicker.ImagePicker;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
+import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
 import com.google.android.material.textview.MaterialTextView;
+import com.google.mlkit.vision.common.InputImage;
+import com.google.mlkit.vision.text.Text;
+import com.google.mlkit.vision.text.TextRecognition;
+import com.google.mlkit.vision.text.TextRecognizer;
+import com.google.mlkit.vision.text.latin.TextRecognizerOptions;
+import com.theartofdev.edmodo.cropper.CropImage;
+import com.theartofdev.edmodo.cropper.CropImageView;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
+import static android.app.Activity.RESULT_OK;
 import static android.content.Context.ALARM_SERVICE;
 
 public class AddDialog extends DialogFragment implements Toolbar.OnMenuItemClickListener {
@@ -50,6 +74,10 @@ public class AddDialog extends DialogFragment implements Toolbar.OnMenuItemClick
     private MaterialToolbar toolbar;
     private MaterialTextView textViewDate;
     private EditText editTextMedicineName;
+    private ExtendedFloatingActionButton captureButton;
+    private TextRecognizer textRecognizer;
+    private Bitmap bitmap;
+    private Uri imageUri;
     private ChipGroup chipGroupScheduleTimes, chipGroupAlertType;
     private Chip chipSelected;
     private int[] chipArrayIds = {R.id.chip1, R.id.chip2, R.id.chip3, R.id.chip4, R.id.chip5};
@@ -108,6 +136,7 @@ public class AddDialog extends DialogFragment implements Toolbar.OnMenuItemClick
         numberPicker = root.findViewById(R.id.number_picker_number_doses);
         chipGroupAlertType = root.findViewById(R.id.chip_group_alert_type);
         chipSelected = root.findViewById(chipGroupAlertType.getCheckedChipId());
+        captureButton = root.findViewById(R.id.fab_capture);
 
         return root;
     }
@@ -227,8 +256,66 @@ public class AddDialog extends DialogFragment implements Toolbar.OnMenuItemClick
             else
                 showAlertDialog("Alert Type");
         });
+
+
+        // TODO Capture and then convert this image into text (Akash)
+
+        if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.CAMERA)
+                != PackageManager.PERMISSION_GRANTED ||
+                ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.READ_EXTERNAL_STORAGE)
+                        != PackageManager.PERMISSION_GRANTED) {
+
+            // Request camera and storage permissions
+            ActivityCompat.requestPermissions(requireActivity(),
+                    new String[]{Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE},
+                    100);
+        }
+
+        captureButton.setOnClickListener(view1 ->{
+            ImagePicker.Companion.with(this)
+                    .crop()
+                    .compress(1024)
+                    .maxResultSize(1080, 1080)
+                    .start();
+        });
     }
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (resultCode == RESULT_OK) {
+            if (data != null){
+                imageUri = data.getData();
+                Log.i("Image Result", imageUri.toString());
+                getTextFromImage();
+            }
+        }else {
+            Log.i("Image Result", "imageUri.toString()");
+        }
+    }
+
+    private void getTextFromImage() {
+        TextRecognizer recognizer = TextRecognition.getClient(TextRecognizerOptions.DEFAULT_OPTIONS);
+
+        if (imageUri != null){
+            try {
+                InputImage inputImage = InputImage.fromFilePath(getActivity(), imageUri);
+
+                Task<Text> result = recognizer.process(inputImage)
+                        .addOnSuccessListener(text -> {
+                            editTextMedicineName.setText(text.getText());
+                            Log.i("Text Result", "Text : " + text.getText());
+                        }).addOnFailureListener(e -> {
+
+                        });
+
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
+    //------------------------------------- End
 
     @Override
     public boolean onMenuItemClick(MenuItem item) {

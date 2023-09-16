@@ -7,6 +7,7 @@
     <string name="medicine_name">Medicine name</string>
     <string name="dosage_summary">Dosage</string>
     <string name="add_medicine">Add Medicine</string>
+    <string name="image_capture">Capture</string>
     <string name="string_time">Time</string>
     <string name="medicine_name_hint">Medicine name</string>
     <string name="string_from">From</string>
