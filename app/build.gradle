@@ -41,7 +41,6 @@ dependencies {
     implementation group: 'joda-time', name: 'joda-time', version: '2.10'
     implementation 'com.github.alxrm:animated-clock-icon:1.0.2'
 
-    api 'com.theartofdev.edmodo:android-image-cropper:2.8.+'
     implementation 'com.github.dhaval2404:imagepicker:2.1'
     implementation 'com.google.android.gms:play-services-mlkit-text-recognition:19.0.0'
 }
