@@ -27,7 +27,7 @@
                 android:layout_height="200dp"
                 android:layout_gravity="center"
                 android:padding="8dp"
-                android:src="@drawable/ic_launcher_web" />
+                android:src="@drawable/logo" />
 
             <TextView
                 android:layout_width="wrap_content"
